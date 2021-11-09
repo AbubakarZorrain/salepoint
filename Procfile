@@ -1,0 +1,1 @@
+web: gunicorn touqeer.wsgi --log-file -
