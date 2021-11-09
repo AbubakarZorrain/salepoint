@@ -1,1 +1,1 @@
-web: gunicorn touqeer.wsgi --log-file -
+web: gunicorn salepoint.wsgi --log-file -
