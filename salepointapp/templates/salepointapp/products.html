@@ -1,0 +1,52 @@
+{% extends 'salepointapp/main.html' %}
+  {% block content %}
+{% load mathfilters %}
+<button class="btn btn-primary" onclick="myFunction()">Add More Products</button>
+           <div id="addproduct" style="display:none">
+               <h3>Add More Products</h3>
+    <form method="POST" class="form-inline" enctype="multipart/form-data">
+    {% csrf_token %}
+
+        <a>{{ProductForm.name.label}}</a><input type="text" name="productname" id="productname">
+                <a>{{ProductForm.quantity.label}}</a><input type="number" name="productquantity" oninput="ProFn()" value="0" id="productquantity">
+        <a>{{ProductForm.scheme.label}}</a><input type="number" value="0" name="productscheme" id="productscheme">
+                <a>{{ProductForm.rate.label}}</a><input type="number" value="0" name="productrate" oninput="ProFn()" id="productrate">
+        <a>{{ProductForm.discountPercent.label}}</a><input type="number" value="0" name="productdiscountPercent" oninput="ProFn()" id="productdiscountPercent">
+                <a>{{ProductForm.discount.label}}</a><input type="number" value="0" name="productdiscount" oninput="ProFn()" id="productdiscount">
+         <a>{{ProductForm.gst.label}}</a><input type="number" value="0" oninput="ProFn()" name="productgst" id="productgst">
+                <a>{{ProductForm.value.label}}</a><input type="number"value="0" name="productvalue" id="productvalue">
+        <a>{{ProductForm.product_image.label}}</a><input type="file"  name="myfile" id="product_image">
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+    </form>
+</div>
+<hr>
+<h3> All Products List</h3>
+<table style="width: 100%;">
+<colgroup>
+  <col span="2" style="background-color: #D6EEEE">
+</colgroup>
+<tr>
+    <th>Sr.No</th><th>Product Name</th><th>Quantity</th><th>Unit Price</th><th>Total Price</th><th>Discount</th><th>Discount Percentage</th>
+       <th>GST</th> <th>Final Unit Price</th><th>Final Total Price</th>
+</tr>
+    {%for product in product%}
+  <tr>
+<td>{{product.id}}</td><td>{{product.name}}</td><td>{{product.quantity}}</td><td>{{product.rate}}</td>
+
+        <td>{{product.rate|mul:product.quantity}}</td>
+        <td>{{product.discount}}</td><td>{{product.discountPercent}}</td><td>{{product.gst}}</td>
+      {%if product.gst != 0 %}
+      <td>{{product.gst|div:product.quantity|add:product.rate|sub:product.discountPercent|sub:product.discount }}</td>
+{% elif product.gst == 0%}
+            <td>{{product.rate|sub:product.discountPercent|sub:product.discount }}</td>
+      {%endif%}
+        <td>{{product.value}}</td>
+</tr>
+    {%endfor%}
+</table>
+
+
+
+{% endblock content %}
+

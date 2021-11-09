@@ -1,0 +1,104 @@
+{% extends 'salepointapp/main.html' %}
+{% load mathfilters %}
+
+
+
+  {% block content %}
+<form method="post">
+     {% csrf_token %}
+<!--From: <input type="date" name="datafrom">-->
+Name : <input type="text" name="productname">
+    Quantity : <input type="text" oninput="myFunction()" id ="q1"name="quantity">
+    {% for q in q %}
+    Remaining Quantity
+    <input type="text" id="q2"  name="remaining"value="">
+    Available Quantity<p id="q3">{{q.quantity}}</p>
+{%endfor%}
+<input type="submit" value="Search">
+    </form>
+{% for q in q %}
+{{q.difference}}
+{%endfor%}
+
+{% for data in data %}
+
+<div id="dvContents{{data.id}}" style="border: 1px dotted black; padding: 5px; width:800px;text-align:center">
+<table cellspacing="0" cellpadding="0" border="1px" bgcolor="#ffffff" style="text-align:center">
+	<tr>
+		<td>
+<table cellspacing="3" border="0" style="text-align:center; border: 1px solid black;" >
+    <thead ><tr bgcolor="#ffffff" >
+    <th>Sr.No</th><th>Company</th><th>Quantity</th><th>Unit Price</th><th>Total Price</th><th>Discount</th><th>Discount Percentage</th>
+        <th>Final Unit Price</th><th>Final Total Price</th>
+    </tr>
+</thead>
+    <tbody>
+
+    {% for product in data.saleproduct.all %}
+    <tr bgcolor="#ffffff"><td>{{product.id}}</td><td>{{product.name}}</td><td>{{product.quantity}}</td><td>{{product.rate}}</td>
+
+        <td>{{product.rate|mul:product.quantity}}</td>
+        <td>{{product.discount}}</td><td>{{product.discountPercent}}</td>
+    <td>{{product.rate|sub:product.discountPercent|sub:product.discount }}</td>
+        <td>{{product.rate|sub:product.discountPercent|sub:product.discount|mul:product.quantity }}</td>
+    </tr>
+{%endfor%}
+    <tr></tr><tr></tr>
+    <thead ><tr bgcolor="#ffffff">
+    <th>Area</th><th>employee</th><th>products</th><th>quantity</th><th>scheme</th><th>discountPercent</th><th>discount</th>
+        <th>GST</th><th>Final Total Price</th><th>Date</th><th>Action</th>
+    </tr>
+</thead><tbody>
+<tr bgcolor="#ffffff"><td>   {% for area in data.Area.all %}{{area.AreaName}} {%endfor%}</td><td>    {% for employee in data.employee.all %}{{employee.name}} {%endfor%}
+</td><td>{{data.saleproduct.count}}</td><td>{{data.quantity}}</td>
+
+        <td>{{data.discount}}</td><td>{{data.discountPercent}}</td>
+    <td>{{data.gst }}</td>
+        <td>{{data.value }}</td><td>{{data.value }}</td>
+    <td>{{data.date_created}}</td><td><input type="button" onclick="PrintTable({{data.id}});" value="Print"/></td>
+</tr></tbody>
+
+</tbody>
+
+    </table>
+            	</td>
+	</tr>
+</table>
+<br><hr>
+
+</div>
+  {% endfor %}
+
+<script>
+function myFunction(){
+    var a1 = document.getElementById('q1').value
+    var a2 = document.getElementById('q3').innerHTML
+    var r = a2 - a1;
+    document.getElementById('q2').value = r;
+    }
+</script>
+
+<script type="text/javascript">
+    function PrintTable(id) {
+        var printWindow = window.open('', '', 'height=800,width=800');
+        printWindow.document.write('<html><head><title>Table Contents</title>');
+
+        //Print the Table CSS.
+        var table_style = document.getElementById("table_style").innerHTML;
+        printWindow.document.write('<style type = "text/css">');
+        printWindow.document.write(table_style);
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head>');
+
+        //Print the DIV contents i.e. the HTML Table.
+        printWindow.document.write('<body>');
+        var divContents = document.getElementById("dvContents"+id).innerHTML;
+        printWindow.document.write(divContents);
+        printWindow.document.write('</body>');
+
+        printWindow.document.write('</html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
+</script>
+{% endblock %}

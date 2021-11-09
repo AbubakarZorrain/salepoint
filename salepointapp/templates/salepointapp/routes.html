@@ -1,0 +1,22 @@
+{% extends 'salepointapp/main.html' %}
+  {% block content %}
+
+<table style="width: 100%;">
+<colgroup>
+  <col span="2" style="background-color: #D6EEEE">
+</colgroup>
+<tr>
+<th>AreaName</th>
+<th>AreaDistance</th>
+<th>Added By</th>
+  <th>Date Added</th>
+</tr>
+    {%for route in routes %}
+  <tr>
+<td>{{route.AreaName}}</td>
+<td>{{route.AreaDistance}}</td>
+<td>{{route.user}}</td>
+    <td>{{route.date_created}}</td>
+</tr>
+    {%endfor%}
+{% endblock %}
